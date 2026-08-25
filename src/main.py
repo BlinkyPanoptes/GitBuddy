@@ -1,7 +1,7 @@
 import subprocess
 from git_auth import is_github_authenticated, authenticate_github
 from git_remote import has_git_remote, git_remote_origin
-from git_operations import get_repository_status
+from git_operations import get_repository_status, git_add_stages, stages_changes, git_push_changes
 import sys
 
 def is_git_repository():
@@ -25,7 +25,10 @@ def main_menu():
         print("           GitBuddy")
         print("================================")
         print("1. Repository Status")
-        print("2. Exit")
+        print("2. Stage Changes")
+        print("3. Commit Changes")
+        print("4. Push Changes")
+        print("5. Exit")
         print("================================")
 
         user_choice = input("Select an option: ")
@@ -46,15 +49,53 @@ def main_menu():
                 for item in status:
                     print(f"{item['status']}: {item['file']}")
 
-                    user_input = input("Back to Main Menu?(y/n): ")
+            user_input = input("Back to Main Menu?(y/n): ")
 
-                    if user_input.lower() == 'y':
-                        main_menu()
-                    else:
-                        print("Exiting GitBuddy.")
-                        sys.exit()
+            if user_input.lower() != 'y':
+                print("Exiting GitBuddy.")
+                sys.exit()
 
         elif user_choice == "2":
+            if git_add_stages():
+                print("Successfully staged changes")
+
+                user_input = input("Back to Main Menu?(y/n): ")
+
+                if user_input.lower() != 'y':
+                    print("Exiting GitBuddy.")
+                    sys.exit()
+
+            else:
+                print("Failed to stage changes.")
+
+        elif user_choice == "3":
+            commit_message = input("Enter commit message: ")
+
+            if stages_changes(commit_message):
+                print("Successfully committed changes.")
+
+                user_input = input("Back to Main Menu?(y/n): ")
+                
+                if user_input.lower() != 'y':
+                    print("Exiting GitBuddy.")
+                    sys.exit()
+            else:
+                print("Failed to commit changes.")
+
+        elif user_choice == "4":
+
+            if git_push_changes():
+                print("Successfully pushed changes.")
+
+                user_input = input("Back to Main Menu?(y/n): ")
+
+                if user_input.lower() != 'y':
+                    print("Exiting GitBuddy.")
+                    sys.exit()   
+            else:
+                print("Failed to push changes.")
+
+        elif user_choice == "5":
             print("Exiting GitBuddy.")
             sys.exit()
 

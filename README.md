@@ -9,6 +9,7 @@ A simple terminal-based Git and GitHub assistant built with Python.
 GitBuddy is currently in early development. Version 0.1 focuses on establishing and testing the application's startup workflow, GitHub authentication, local Git repository management, and remote repository configuration.
 
 ## Current Features
+Testing GitBuddy workflow.
 
 ### GitHub Authentication
 
@@ -43,5 +44,3 @@ Local Git Repository Check
 Git Remote Check
         ↓
 Project Ready
-
-TESTING
