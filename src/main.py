@@ -1,7 +1,7 @@
 import subprocess
 from git_auth import is_github_authenticated, authenticate_github
 from git_remote import has_git_remote, git_remote_origin
-from git_operations import get_repository_status, git_add_stages, stages_changes, git_push_changes
+from git_operations import get_repository_status, git_add_stages, stages_changes, git_push_changes, has_staged_changes
 import sys
 
 def is_git_repository():
@@ -56,8 +56,15 @@ def main_menu():
                 sys.exit()
 
         elif user_choice == "2":
-            if git_add_stages():
-                print("Successfully staged changes")
+
+            status = get_repository_status()
+
+            if status is None:
+                print("Failed to retrieve repository status.")
+
+            elif not status:
+                print("There are no changes to stage.")
+                print("Please add a file or make a change before staging")
 
                 user_input = input("Back to Main Menu?(y/n): ")
 
@@ -66,21 +73,48 @@ def main_menu():
                     sys.exit()
 
             else:
-                print("Failed to stage changes.")
+                if git_add_stages():
+                    print("Successfully staged changes")
+
+                    user_input = input("Back to Main Menu?(y/n): ")
+
+                    if user_input.lower() != 'y':
+                        print("Exiting GitBuddy.")
+                        sys.exit()
+
+                else:
+                    print("Failed to stage changes.")
 
         elif user_choice == "3":
-            commit_message = input("Enter commit message: ")
 
-            if stages_changes(commit_message):
-                print("Successfully committed changes.")
+            staged_changes = has_staged_changes()
+
+            if staged_changes is None:
+                print("Failed to retrieve repository status.")
+
+            elif not staged_changes:
+                print("There are no staged changes to commit.")
+                print("Please make a change and stage it before committing.")
 
                 user_input = input("Back to Main Menu?(y/n): ")
                 
                 if user_input.lower() != 'y':
                     print("Exiting GitBuddy.")
                     sys.exit()
+
             else:
-                print("Failed to commit changes.")
+                commit_message = input("Enter commit message: ")
+
+                if stages_changes(commit_message):
+                    print("Successfully committed changes.")
+
+                    user_input = input("Back to Main Menu?(y/n): ")
+                    
+                    if user_input.lower() != 'y':
+                        print("Exiting GitBuddy.")
+                        sys.exit()
+                else:
+                    print("Failed to commit changes.")
 
         elif user_choice == "4":
 

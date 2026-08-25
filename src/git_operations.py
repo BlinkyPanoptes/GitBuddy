@@ -57,6 +57,25 @@ def get_repository_status():
 
     return parse_git_status(raw_status)
 
+# This function is to check if there are staged changes
+def has_staged_changes():
+    status = get_repository_status()
+
+    if status is None:
+        return None
+
+    for item in status:
+        if item['status'] == 'staged modification':
+            return True
+
+        elif item['status'] == 'staged addition':
+            return True
+
+        elif item['status'] == 'staged deletion':
+            return True
+
+    return False
+
 # This function is the git add
 def git_add_stages():
     stage_results = subprocess.run(['git', 'add', '.'], capture_output = True, text = True)
@@ -81,7 +100,7 @@ def stages_changes(message):
 
 # This function is the git push
 def git_push_changes():
-    push_results = subprocess.run(['git', 'push',], capture_output = True, text = True)
+    push_results = subprocess.run(['git', 'push', '-u', 'origin', 'HEAD'], capture_output = True, text = True)
 
     if push_results.returncode == 0:
         return True
