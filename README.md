@@ -43,3 +43,5 @@ Local Git Repository Check
 Git Remote Check
         ↓
 Project Ready
+
+TESTING

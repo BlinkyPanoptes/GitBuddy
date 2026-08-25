@@ -1,6 +1,7 @@
 import subprocess
 from git_auth import is_github_authenticated, authenticate_github
 from git_remote import has_git_remote, git_remote_origin
+from git_operations import get_repository_status
 import sys
 
 def is_git_repository():
@@ -16,6 +17,49 @@ def is_git_repository():
         return True
     else:
         return False
+
+# Main Menu
+def main_menu():
+    while True:
+        print("\n================================")
+        print("           GitBuddy")
+        print("================================")
+        print("1. Repository Status")
+        print("2. Exit")
+        print("================================")
+
+        user_choice = input("Select an option: ")
+
+        if user_choice == "1":
+
+            status = get_repository_status()
+
+            if status is None:
+                print("Failed to retrieve repository status.")
+
+            elif not status:
+                print("Working tree is clean.")
+
+            else:
+                print("\nRepository Changes:")
+
+                for item in status:
+                    print(f"{item['status']}: {item['file']}")
+
+                    user_input = input("Back to Main Menu?(y/n): ")
+
+                    if user_input.lower() == 'y':
+                        main_menu()
+                    else:
+                        print("Exiting GitBuddy.")
+                        sys.exit()
+
+        elif user_choice == "2":
+            print("Exiting GitBuddy.")
+            sys.exit()
+
+        else:
+            print("Invalid option. Please try again.")
 
 
 # Main program execution
@@ -114,4 +158,9 @@ if __name__ == "__main__":
 
         else:
             print("Remote repository connection canceled.")
-        
+
+    # ==========================================
+    # 4. MAIN MENU
+    # ==========================================
+
+    main_menu()
