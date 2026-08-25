@@ -65,12 +65,32 @@ def git_add_stages():
     if stage_results.returncode == 0:
         return True
     else:
+        return None
+
+# This function is the git commit -m
+def stages_changes(message):
+    commit_results = subprocess.run(
+        ['git', 'commit', '-m', message],
+        capture_output=True,
+        text=True
+    )
+
+    if commit_results.returncode == 0:
+        return True
+    else:
+        print("Git stdout:")
+        print(commit_results.stdout)
+
+        print("Git stderr:")
+        print(commit_results.stderr)
+
         return False
 
 if __name__ == "__main__":
 
-    if git_add_stages():
-        print("Successfully staged changes.")
+    commit_message = input("Enter commit message: ")
 
+    if stages_changes(commit_message):
+        print("Successfully committed changes.")
     else:
-        print("Failed to stage changes.")
+        print("Failed to commit changes.")
