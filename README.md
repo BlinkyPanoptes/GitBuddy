@@ -4,12 +4,13 @@ A simple terminal-based Git and GitHub assistant built with Python.
 
 ## Current Version
 
-**v0.1 — Startup Workflow**
+**v0.2.0 — Core Git Workflow**
 
-GitBuddy is currently in early development. Version 0.1 focuses on establishing and testing the application's startup workflow, GitHub authentication, local Git repository management, and remote repository configuration.
+GitBuddy is currently in early development.
+
+Version 0.2.0 expands GitBuddy from a startup and repository configuration tool into a functional Git workflow assistant. It introduces repository status monitoring, staging, committing, and pushing changes through an interactive terminal interface.
 
 ## Current Features
-Testing GitBuddy workflow.
 
 ### GitHub Authentication
 
@@ -32,15 +33,37 @@ Testing GitBuddy workflow.
 - Connect the local repository to an existing remote repository
 - Configure the remote as `origin`
 
-## Current Startup Workflow
+### Repository Status
 
-GitBuddy currently follows this startup sequence:
+- Retrieve the current Git repository status
+- Parse Git status codes
+- Identify untracked files
+- Identify modified files
+- Identify staged modifications
+- Identify staged additions
+- Identify staged deletions
+- Detect when the working tree is clean
+
+### Git Operations
+
+- Stage changes using `git add .`
+- Validate that changes exist before staging
+- Validate that staged changes exist before committing
+- Commit changes using a user-provided commit message
+- Push changes to the configured remote repository
+- Automatically establish upstream tracking during the first push
+
+### Interactive Terminal Menu
+
+GitBuddy currently provides the following menu:
 
 ```text
-GitHub Authentication
-        ↓
-Local Git Repository Check
-        ↓
-Git Remote Check
-        ↓
-Project Ready
+================================
+           GitBuddy
+================================
+1. Repository Status
+2. Stage Changes
+3. Commit Changes
+4. Push Changes
+5. Exit
+================================
