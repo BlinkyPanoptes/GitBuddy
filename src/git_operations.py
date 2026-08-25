@@ -1,5 +1,4 @@
 import subprocess
-import sys
 
 def get_git_status():
     check_git_status = subprocess.run(['git', 'status', '--short',], capture_output = True, text = True)
@@ -78,19 +77,13 @@ def stages_changes(message):
     if commit_results.returncode == 0:
         return True
     else:
-        print("Git stdout:")
-        print(commit_results.stdout)
-
-        print("Git stderr:")
-        print(commit_results.stderr)
-
         return False
 
-if __name__ == "__main__":
+# This function is the git push
+def git_push_changes():
+    push_results = subprocess.run(['git', 'push',], capture_output = True, text = True)
 
-    commit_message = input("Enter commit message: ")
-
-    if stages_changes(commit_message):
-        print("Successfully committed changes.")
+    if push_results.returncode == 0:
+        return True
     else:
-        print("Failed to commit changes.")
+        return False
