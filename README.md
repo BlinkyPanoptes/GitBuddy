@@ -8,7 +8,7 @@ A simple terminal-based Git and GitHub assistant built with Python.
 
 GitBuddy is currently in early development.
 
-Version 0.2.0 expands GitBuddy from a startup and repository configuration tool into a functional Git workflow assistant. It introduces repository status monitoring, staging, committing, and pushing changes through an interactive terminal interface.
+Version 0.2.0 expands GitBuddy from a startup and repository configuration tool into a functional Git workflow assistant. It introduces repository status monitoring, directory inspection, staging, committing, pushing, and Git error handling through an interactive terminal interface.
 
 ## Current Features
 
@@ -44,14 +44,29 @@ Version 0.2.0 expands GitBuddy from a startup and repository configuration tool 
 - Identify staged deletions
 - Detect when the working tree is clean
 
+### Directory Inspection
+
+- Display files and directories contained within the current repository
+- Exclude the `.git` directory from the displayed contents
+- Warn the user when a repository contains no project files
+
 ### Git Operations
 
 - Stage changes using `git add .`
+- Display files successfully staged
 - Validate that changes exist before staging
 - Validate that staged changes exist before committing
 - Commit changes using a user-provided commit message
 - Push changes to the configured remote repository
 - Automatically establish upstream tracking during the first push
+
+### Git Error Handling
+
+- Capture errors returned by Git operations
+- Display the original Git error
+- Provide a human-readable explanation for recognized Git errors
+- Provide recommended actions when a recognized error occurs
+- Provide a generic explanation for unrecognized Git errors
 
 ### Interactive Terminal Menu
 

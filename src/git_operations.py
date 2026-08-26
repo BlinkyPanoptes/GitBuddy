@@ -1,4 +1,5 @@
 import subprocess
+from error_handler import handle_git_error
 
 # This function checks if the current directory is a Git repository
 def is_git_repository():
@@ -134,5 +135,4 @@ def git_push_changes():
 
     if push_results.returncode == 0:
         return True
-    else:
-        return False
+    return handle_git_error(push_results.stderr.strip())

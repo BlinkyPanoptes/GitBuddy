@@ -112,7 +112,9 @@ def main_menu():
 
         elif user_choice == "4":
 
-            if git_push_changes():
+            push_results = git_push_changes()
+
+            if push_results is True:
                 print("Successfully pushed changes.")
 
                 user_input = input("\nBack to Main Menu?(y/n): ")
@@ -121,7 +123,22 @@ def main_menu():
                     print("Exiting GitBuddy.")
                     sys.exit()   
             else:
-                print("Failed to push changes.")
+                print("\nAttention: Push failed.")
+
+                print("\nGit Error:")
+                print(push_results["error"])
+
+                print("\nWhy this happened:")
+                print(push_results["explanation"])
+
+                print("\nRecommended action:")
+                print(push_results['recommended'])
+
+                user_input = input("\nBack to Main Menu?(y/n): ")
+
+                if user_input.lower() != 'y':
+                    print("Exiting GitBuddy.")
+                    sys.exit()
 
         elif user_choice == "5":
             print("Exiting GitBuddy.")
@@ -132,7 +149,7 @@ def main_menu():
 
 
 # Main program execution
-if __name__ == "__main__":
+def main():
 
     # ==========================================
     # 1. CHECK GITHUB AUTHENTICATION
@@ -233,3 +250,6 @@ if __name__ == "__main__":
     # ==========================================
 
     main_menu()
+
+if __name__ == "__main__":
+    main()

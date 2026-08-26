@@ -15,3 +15,6 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Python package build metadata
+src/gitbuddy.egg-info/
