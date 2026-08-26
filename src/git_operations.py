@@ -1,5 +1,20 @@
 import subprocess
 
+# This function checks if the current directory is a Git repository
+def is_git_repository():
+    # Run the git command 'git rev-parse --is-inside-work-tree'
+    check_git_repo = subprocess.run(
+        ['git', 'rev-parse', '--is-inside-work-tree'],
+        capture_output=True,
+        text=True
+    )
+
+    # Condition to check if the command worked (return code 0)
+    if check_git_repo.returncode == 0:
+        return True
+    else:
+        return False
+
 def get_git_status():
     check_git_status = subprocess.run(['git', 'status', '--short',], capture_output = True, text = True)
 
@@ -81,7 +96,22 @@ def git_add_stages():
     stage_results = subprocess.run(['git', 'add', '.'], capture_output = True, text = True)
 
     if stage_results.returncode == 0:
-        return True
+
+        status = get_repository_status()
+        staged_files = []
+
+        for item in status:
+
+            if item['status'] == 'staged modification':
+                staged_files.append(item)
+
+            elif item['status'] == 'staged addition':
+                staged_files.append(item)
+
+            elif item['status'] == 'staged deletion':
+                staged_files.append(item)
+
+        return staged_files
     else:
         return None
 

@@ -1,22 +1,9 @@
 import subprocess
 from git_auth import is_github_authenticated, authenticate_github
 from git_remote import has_git_remote, git_remote_origin
-from git_operations import get_repository_status, git_add_stages, stages_changes, git_push_changes, has_staged_changes
+from git_operations import get_repository_status, git_add_stages, stages_changes, git_push_changes, has_staged_changes, is_git_repository
+from file_operations import check_file_directory
 import sys
-
-def is_git_repository():
-    # Run the git command 'git rev-parse --is-inside-work-tree'
-    check_git_repo = subprocess.run(
-        ['git', 'rev-parse', '--is-inside-work-tree'],
-        capture_output=True,
-        text=True
-    )
-
-    # Condition to check if the command worked (return code 0)
-    if check_git_repo.returncode == 0:
-        return True
-    else:
-        return False
 
 # Main Menu
 def main_menu():
@@ -35,21 +22,22 @@ def main_menu():
 
         if user_choice == "1":
 
-            status = get_repository_status()
+            repo_status = get_repository_status()
+            check_file_directory()
 
-            if status is None:
+            if repo_status is None:
                 print("Failed to retrieve repository status.")
 
-            elif not status:
+            elif not repo_status:
                 print("Working tree is clean.")
 
             else:
                 print("\nRepository Changes:")
 
-                for item in status:
+                for item in repo_status:
                     print(f"{item['status']}: {item['file']}")
 
-            user_input = input("Back to Main Menu?(y/n): ")
+            user_input = input("\nBack to Main Menu?(y/n): ")
 
             if user_input.lower() != 'y':
                 print("Exiting GitBuddy.")
@@ -66,17 +54,23 @@ def main_menu():
                 print("There are no changes to stage.")
                 print("Please add a file or make a change before staging")
 
-                user_input = input("Back to Main Menu?(y/n): ")
+                user_input = input("\nBack to Main Menu?(y/n): ")
 
                 if user_input.lower() != 'y':
                     print("Exiting GitBuddy.")
                     sys.exit()
 
             else:
-                if git_add_stages():
-                    print("Successfully staged changes")
 
-                    user_input = input("Back to Main Menu?(y/n): ")
+                staged_status = git_add_stages()
+                
+                if staged_status is not None:
+                    print("\nSuccessfully staged changes\n")
+
+                    for item in staged_status:
+                        print(f"{item['status']}: {item['file']}")
+
+                    user_input = input("\nBack to Main Menu?(y/n): ")
 
                     if user_input.lower() != 'y':
                         print("Exiting GitBuddy.")
@@ -96,7 +90,7 @@ def main_menu():
                 print("There are no staged changes to commit.")
                 print("Please make a change and stage it before committing.")
 
-                user_input = input("Back to Main Menu?(y/n): ")
+                user_input = input("\nBack to Main Menu?(y/n): ")
                 
                 if user_input.lower() != 'y':
                     print("Exiting GitBuddy.")
@@ -108,7 +102,7 @@ def main_menu():
                 if stages_changes(commit_message):
                     print("Successfully committed changes.")
 
-                    user_input = input("Back to Main Menu?(y/n): ")
+                    user_input = input("\nBack to Main Menu?(y/n): ")
                     
                     if user_input.lower() != 'y':
                         print("Exiting GitBuddy.")
@@ -121,7 +115,7 @@ def main_menu():
             if git_push_changes():
                 print("Successfully pushed changes.")
 
-                user_input = input("Back to Main Menu?(y/n): ")
+                user_input = input("\nBack to Main Menu?(y/n): ")
 
                 if user_input.lower() != 'y':
                     print("Exiting GitBuddy.")
@@ -145,7 +139,7 @@ if __name__ == "__main__":
     # ==========================================
 
     if is_github_authenticated():
-        print("GitHub account is already authenticated.")
+        print("\nGitHub account is already authenticated.")
 
     else:
         print("GitHub is not yet authenticated.")
