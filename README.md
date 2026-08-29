@@ -1,14 +1,14 @@
-# GitBuddy
+# GitPal
 
-A simple terminal-based Git and GitHub assistant built with Python.
+A pal for your daily Git needs.
 
 ## Current Version
 
 **v0.2.0 — Core Git Workflow**
 
-GitBuddy is currently in early development.
+GitPal is a terminal-based Git and GitHub assistant built with Python. It is currently in early development.
 
-Version 0.2.0 expands GitBuddy from a startup and repository configuration tool into a functional Git workflow assistant. It introduces repository status monitoring, directory inspection, staging, committing, pushing, and Git error handling through an interactive terminal interface.
+Version 0.2.0 expands GitPal from a startup and repository configuration tool into a functional Git workflow assistant. It introduces repository status monitoring, directory inspection, staging, committing, pushing, remote repository management, Git error handling, loading animations, and colorized terminal output through an interactive command-line interface.
 
 ## Current Features
 
@@ -31,7 +31,11 @@ Version 0.2.0 expands GitBuddy from a startup and repository configuration tool 
 - Detect whether the local repository has a configured remote
 - Inform the user when no remote is configured
 - Connect the local repository to an existing remote repository
+- Verify that the remote GitHub repository exists and is accessible
 - Configure the remote as `origin`
+- View the current remote repository
+- Change the configured remote repository
+- Prevent invalid or inaccessible repositories from being configured as the remote
 
 ### Repository Status
 
@@ -43,11 +47,12 @@ Version 0.2.0 expands GitBuddy from a startup and repository configuration tool 
 - Identify staged additions
 - Identify staged deletions
 - Detect when the working tree is clean
+- Display status information using color-coded output
 
 ### Directory Inspection
 
 - Display files and directories contained within the current repository
-- Exclude the `.git` directory from the displayed contents
+- Exclude the `.git` directory from displayed contents
 - Warn the user when a repository contains no project files
 
 ### Git Operations
@@ -68,17 +73,31 @@ Version 0.2.0 expands GitBuddy from a startup and repository configuration tool 
 - Provide recommended actions when a recognized error occurs
 - Provide a generic explanation for unrecognized Git errors
 
-### Interactive Terminal Menu
+### Terminal UI
 
-GitBuddy currently provides the following menu:
+GitPal is designed around a terminal-first workflow rather than a separate graphical interface.
+
+Current UI features include:
+
+- Loading animations for repository checks and operations
+- Colorized terminal output
+- Green output for successful operations
+- Yellow output for warnings and actions requiring attention
+- Red output for errors and failures
+- Cyan output for informational messages
+- Structured interactive menus
+- Dedicated UI modules for terminal presentation
+
+GitPal currently provides the following main menu:
 
 ```text
 ================================
-           GitBuddy
+       Welcome to GitPal
 ================================
-1. Repository Status
-2. Stage Changes
-3. Commit Changes
-4. Push Changes
-5. Exit
+[1] Repository Status
+[2] Stage Changes
+[3] Commit Changes
+[4] Push Changes
+[5] Remote Repository
+[6] Exit
 ================================

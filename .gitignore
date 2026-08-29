@@ -17,4 +17,4 @@ __pycache__/
 Thumbs.db
 
 # Python package build metadata
-src/gitbuddy.egg-info/
+src/gitpal.egg-info/

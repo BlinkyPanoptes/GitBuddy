@@ -1,4 +1,5 @@
 import subprocess
+from ui.colors import color_text
 from error_handler import handle_git_error
 
 # This function checks if the current directory is a Git repository
@@ -22,7 +23,7 @@ def get_git_status():
     if check_git_status.returncode == 0:
         return check_git_status.stdout
     else:
-        return False
+        return None
 
 def parse_git_status(status_output):
     # Store the parsed Git status information
@@ -38,28 +39,36 @@ def parse_git_status(status_output):
         # Determine the status
         if status_code == '??':
             status = 'untracked'
+            color = 'yellow'
 
         elif status_code[0] == 'M':
             status = 'staged modification'
+            color = 'green'
 
         elif status_code[1] == 'M':
             status = 'modified'
+            color = 'yellow'
 
         elif status_code[0] == 'A':
             status = 'staged addition'
+            color = 'green'
 
         elif status_code[0] == 'D':
             status = 'staged deletion'
+            color = 'red'
 
         elif status_code[1] == 'D':
             status = 'deleted'
+            color = 'red'
 
         else:
             status = 'other'
+            color = 'cyan'
 
         status_list.append({
             'status': status,
-            'file': file_name
+            'file': file_name,
+            'color': color
         })
 
     return status_list
