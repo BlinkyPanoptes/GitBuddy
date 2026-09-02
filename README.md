@@ -82,9 +82,9 @@ Current UI features include:
 - Loading animations for repository checks and operations
 - Colorized terminal output
 - Green output for successful operations
-- Yellow output for warnings and actions requiring attention
+- Yellow output for instructions and actions requiring attention
 - Red output for errors and failures
-- Cyan output for informational messages
+- White (default) output for neutral, informational messages
 - Structured interactive menus
 - Dedicated UI modules for terminal presentation
 

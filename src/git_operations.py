@@ -63,7 +63,7 @@ def parse_git_status(status_output):
 
         else:
             status = 'other'
-            color = 'cyan'
+            color = 'white'
 
         status_list.append({
             'status': status,

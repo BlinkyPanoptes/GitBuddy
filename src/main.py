@@ -5,6 +5,7 @@ from git_operations import get_repository_status, git_add_stages, stages_changes
 from file_operations import check_file_directory
 from ui.loading import loading_screen
 from ui.colors import color_text
+import time
 import sys
 
 # Back to Main Menu
@@ -12,11 +13,11 @@ def return_to_menu():
     user_input = input("\nBack to Main Menu? [y/n]: ")
 
     if user_input.lower() != 'y':
-        exit_gitbuddy()
+        exit_gitpal()
 
 # System Exit
-def exit_gitbuddy():
-    color_text("Exiting GitPal.\n", "cyan")
+def exit_gitpal():
+    print("\nExiting GitPal.\n")
     sys.exit()
 
 # Main Menu
@@ -41,10 +42,10 @@ def main_menu():
             check_file_directory()
 
             if repo_status is None:
-                color_text("Failed to retrieve repository status.", "red")
+                color_text("\nFailed to retrieve repository status.", "red")
 
             elif not repo_status:
-                color_text("Working tree is clean.", "green")
+                color_text("\nWorking tree is clean.", "green")
 
             else:
                 print("\nRepository Changes:")
@@ -59,10 +60,10 @@ def main_menu():
             status = get_repository_status()
 
             if status is None:
-                color_text("Failed to retrieve repository status.", "red")
+                color_text("\nFailed to retrieve repository status.", "red")
 
             elif not status:
-                color_text("There are no changes to stage.", "yellow")
+                color_text("\nThere are no changes to stage.", "yellow")
                 color_text("Please add a file or make a change before staging", "yellow")
 
             else:
@@ -72,43 +73,43 @@ def main_menu():
                     color_text("\nSuccessfully staged changes\n", "green")
 
                     for item in staged_status:
-                        print(f"{item['status']}: {item['file']}")
+                        color_text(f"{item['status']}: {item['file']}", item['color'])
 
                     return_to_menu()
 
                 else:
-                    color_text("Failed to stage changes.", "red")
+                    color_text("\nFailed to stage changes.", "red")
 
         elif user_choice == "3":
 
             staged_changes = has_staged_changes()
 
             if staged_changes is None:
-                color_text("Failed to retrieve repository status.", "red")
+                color_text("\nFailed to retrieve repository status.", "red")
 
             elif not staged_changes:
-                color_text("There are no staged changes to commit.", "yellow")
+                color_text("\nThere are no staged changes to commit.", "yellow")
                 color_text("Please make a change and stage it before committing.", "yellow")
 
                 return_to_menu()
 
             else:
-                commit_message = input("Enter commit message: ")
+                commit_message = input("\nEnter commit message: ")
 
                 if stages_changes(commit_message):
-                    color_text("Successfully committed changes.", "green")
+                    color_text("\nSuccessfully committed changes.", "green")
 
                     return_to_menu()
 
                 else:
-                    color_text("Failed to commit changes.", "red")
+                    color_text("\nFailed to commit changes.", "red")
 
         elif user_choice == "4":
 
             push_results = git_push_changes()
 
             if push_results is True:
-                color_text("Successfully pushed changes.", "green")
+                color_text("\nSuccessfully pushed changes.", "green")
 
                 return_to_menu()   
 
@@ -118,10 +119,10 @@ def main_menu():
                 color_text("\nGit Error:", "red")
                 print(push_results["error"])
 
-                color_text("\nWhy this happened:", "yellow")
+                print("\nWhy this happened:")
                 print(push_results["explanation"])
 
-                color_text("\nRecommended action:", "cyan")
+                color_text("\nRecommended action:", "yellow")
                 print(push_results['recommended'])
 
                 return_to_menu()
@@ -130,10 +131,10 @@ def main_menu():
             remote_repository()
 
         elif user_choice == "6":
-            exit_gitbuddy()
+            exit_gitpal()
 
         else:
-            print("Invalid option. Please try again.")
+            print("\nInvalid option. Please try again.")
 
 
 # Main program execution
@@ -158,15 +159,15 @@ def main():
         if user_auth_answer.lower() == 'y':
 
             if authenticate_github():
-                color_text("Successfully authenticated with GitHub.", "green")
+                color_text("Successfully authenticated with GitHub.\n", "green")
 
             else:
-                color_text("GitHub authentication canceled.", "yellow")
-                exit_gitbuddy()
+                print("GitHub authentication canceled.")
+                exit_gitpal()
 
         else:
             print("GitHub authentication canceled.")
-            exit_gitbuddy()
+            exit_gitpal()
 
 
     # ==========================================
@@ -195,24 +196,22 @@ def main():
             )
 
             if init_git_repo.returncode == 0:
-                color_text("Successfully initialized a new Git repository.", "green")
+                color_text("\nSuccessfully initialized a new Git repository.", "green")
 
                 # Check if the repository is now initialized
                 if is_git_repository():
-                    print("This is now a Git repository.")
+                    print("\nThis is now a Git repository.\n")
                 else:
-                    color_text("Failed to verify the Git repository initialization.", "red")
+                    color_text("Failed to verify the Git repository initialization.\n", "red")
 
             else:
-                color_text(
-                    "Failed to initialize a Git repository. "
-                    "Error:",
-                    init_git_repo.stderr, "red"
-                )
+                color_text("\nFailed to initialize a Git repository.", "red")
+                color_text("\nGit Error:", "red")
+                print(init_git_repo.stderr)
 
         else:
-            print("Git repository initialization canceled.")
-            exit_gitbuddy()
+            print("\nGit repository initialization canceled.")
+            exit_gitpal()
 
     # ==========================================
     # 3. CHECK GIT REMOTE
@@ -222,14 +221,17 @@ def main():
 
         loading_screen("Checking remote repository: ")
 
-        color_text("This Git repository is connected to a remote repository.\n", "green")
+        color_text("This Git repository is connected to a remote repository.", "green")
     else:
         color_text("This Git repository is not connected to any remote repository.", "red")
 
         user_input = input("Do you want to connect this into an existing remote repository? [y/n]: ")
 
         if user_input.lower() == 'y':
-            remote_origin_input = input("Paste your remote origin repository link here: ")
+            remote_origin_input = input("\nPaste your remote origin repository link here: ")
+
+            print()
+            loading_screen("Verifying the remote repository: ")
 
             if verify_git_remote(remote_origin_input):
 
@@ -240,12 +242,14 @@ def main():
                     color_text("Failed to connect to the remote repository", "red")
 
             else:
-                color_text("\nThe GitHub repository could not be found or accessed.", "yellow")
-                print("Please check the repository URL and your GitHub permissions.")
+                color_text("The GitHub repository could not be found or accessed.", "yellow")
+                color_text("Please check the repository URL and your GitHub permissions.", "yellow")
+
+                time.sleep(3)
 
 
         else:
-            print("Remote repository connection canceled.")
+            print("\nRemote repository connection canceled.")
 
 
     # ==========================================

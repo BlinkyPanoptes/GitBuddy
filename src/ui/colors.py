@@ -5,7 +5,7 @@ def color_text(text, color):
         "red": Fore.RED,
         "green": Fore.GREEN,
         "yellow": Fore.YELLOW,
-        "cyan": Fore.CYAN
+        "white": Fore.WHITE
     }
 
     print(colors.get(color, Fore.WHITE) + text + Style.RESET_ALL)

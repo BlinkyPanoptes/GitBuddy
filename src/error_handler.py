@@ -1,6 +1,6 @@
 def handle_git_error(error_message):
 
-    if "non-fast-forward" in error_message:
+    if "non-fast-forward" in error_message or "fetch first" in error_message:
         explanation = (
             "Your local branch is behind the remote branch. "
             "The remote repository contains commits that are not "

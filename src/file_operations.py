@@ -1,4 +1,5 @@
 import os
+from ui.colors import color_text
 
 def check_file_directory():
 
@@ -20,7 +21,7 @@ def check_file_directory():
         return True
 
     else:
-        print("Warning: This repository contains no project files.")
-        print("Please add at least one file before attempting to stage, commit, or push.")
+        color_text("\nWarning: This repository contains no project files.", "red")
+        color_text("Please add at least one file before attempting to stage, commit, or push.", "yellow")
 
         return False
