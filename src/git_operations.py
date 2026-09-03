@@ -1,5 +1,4 @@
 import subprocess
-from ui.colors import color_text
 from error_handler import handle_git_error
 
 # This function checks if the current directory is a Git repository
@@ -73,7 +72,7 @@ def parse_git_status(status_output):
 
     return status_list
 
-# This function is getting the raw data of a the status of the repository
+# This function is getting the raw data of the status of the repository
 def get_repository_status():
     raw_status = get_git_status()
 
@@ -81,6 +80,12 @@ def get_repository_status():
         return None
 
     return parse_git_status(raw_status)
+
+STAGED_STATUSES = ('staged modification', 'staged addition', 'staged deletion')
+
+# True if this status entry represents a currently staged change
+def is_staged(item):
+    return item['status'] in STAGED_STATUSES
 
 # This function is to check if there are staged changes
 def has_staged_changes():
@@ -90,40 +95,21 @@ def has_staged_changes():
         return None
 
     for item in status:
-        if item['status'] == 'staged modification':
-            return True
-
-        elif item['status'] == 'staged addition':
-            return True
-
-        elif item['status'] == 'staged deletion':
+        if is_staged(item):
             return True
 
     return False
 
-# This function is the git add
-def git_add_stages():
-    stage_results = subprocess.run(['git', 'add', '.'], capture_output = True, text = True)
+# Filters the repository status down to just what's currently staged
+def collect_staged_files():
+    status = get_repository_status()
+    staged_files = []
 
-    if stage_results.returncode == 0:
+    for item in status:
+        if is_staged(item):
+            staged_files.append(item)
 
-        status = get_repository_status()
-        staged_files = []
-
-        for item in status:
-
-            if item['status'] == 'staged modification':
-                staged_files.append(item)
-
-            elif item['status'] == 'staged addition':
-                staged_files.append(item)
-
-            elif item['status'] == 'staged deletion':
-                staged_files.append(item)
-
-        return staged_files
-    else:
-        return None
+    return staged_files
 
 # This function is the git commit -m
 def stages_changes(message):

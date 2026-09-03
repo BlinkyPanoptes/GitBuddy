@@ -8,6 +8,9 @@ version = "0.2.0"
 description = "A simple terminal-based Git and GitHub assistant built with Python"
 readme = "README.md"
 requires-python = ">=3.10"
+dependencies = [
+    "rich>=13.7",
+]
 
 [project.scripts]
 gitpal = "main:main"
