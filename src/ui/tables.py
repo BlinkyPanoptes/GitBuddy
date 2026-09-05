@@ -51,8 +51,26 @@ def build_confirm_stage_table(files_with_status, title):
 
     return table
 
+def print_repository_changes_table(files_with_status):
+    console.print(build_confirm_stage_table(files_with_status, "\nRepository Changes"))
+
 def print_confirm_stage_table(files_with_status, title):
     console.print(build_confirm_stage_table(files_with_status, title))
 
 def print_confirm_commit_table(files_with_status):
     console.print(build_confirm_stage_table(files_with_status, "\nFiles to be committed"))
+
+# Build Menu for Remote Repository
+def build_remote_table():
+    table = Table(title="\nRemote Repository")
+
+    table.add_column("Option", justify="center", style="bold yellow")
+    table.add_column("Action", style="white")
+
+    table.add_row("1", "Change Remote")
+    table.add_row("2", "Back")
+
+    return table
+
+def print_remote_table():
+    console.print(build_remote_table())

@@ -77,10 +77,7 @@ def stage_changes():
         return
 
     if staged_status is not None:
-        color_text("\nSuccessfully staged changes\n", "green")
-
-        for item in staged_status:
-            color_text(f"{item['status']}: {item['file']}", item['color'])
+        print_confirm_stage_table(staged_status, "\nSuccessfully staged files:")
 
     else:
         color_text("\nFailed to stage changes.", "red")

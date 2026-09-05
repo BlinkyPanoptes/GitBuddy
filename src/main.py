@@ -6,7 +6,7 @@ from git_staging import stage_changes
 from file_operations import check_file_directory
 from ui.loading import loading_screen
 from ui.colors import color_text
-from ui.tables import print_menu_table, print_confirm_commit_table
+from ui.tables import print_menu_table, print_confirm_commit_table, print_repository_changes_table
 from ui.colors import console
 import time
 import sys
@@ -34,20 +34,17 @@ def main_menu():
 
         if user_choice == "1":
 
-            repo_status = get_repository_status()
-            check_file_directory()
+            if check_file_directory():
+                repo_status = get_repository_status()
 
-            if repo_status is None:
-                color_text("\nFailed to retrieve repository status.", "red")
+                if repo_status is None:
+                    color_text("\nFailed to retrieve repository status.", "red")
 
-            elif not repo_status:
-                color_text("\nWorking tree is clean.", "green")
+                elif not repo_status:
+                    color_text("\nWorking tree is clean.", "green")
 
-            else:
-                print("\nRepository Changes:")
-
-                for item in repo_status:
-                    color_text(f"{item['status']}: {item['file']}", item['color'])
+                else:
+                    print_repository_changes_table(repo_status)
 
             return_to_menu()
 
@@ -190,7 +187,7 @@ def main():
 
                 # Check if the repository is now initialized
                 if is_git_repository():
-                    print("\nThis is now a Git repository.\n")
+                    color_text("This is now a Git repository.\n", "green")
                 else:
                     color_text("Failed to verify the Git repository initialization.\n", "red")
 
