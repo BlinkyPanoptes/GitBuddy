@@ -12,19 +12,19 @@ def loading_screen(message):
     start_time = time.time()
 
     while time.time() - start_time < 2:
-        sys.stdout.write(f'\r{message} |')
+        sys.stdout.write(f'\r{message}|')
         sys.stdout.flush()
         time.sleep(0.1)
 
-        sys.stdout.write(f'\r{message} /')
+        sys.stdout.write(f'\r{message}/')
         sys.stdout.flush()
         time.sleep(0.1)
 
-        sys.stdout.write(f'\r{message} -')
+        sys.stdout.write(f'\r{message}-')
         sys.stdout.flush()
         time.sleep(0.1)
 
-        sys.stdout.write(f'\r{message} \\')
+        sys.stdout.write(f'\r{message}\\')
         sys.stdout.flush()
         time.sleep(0.1)
 

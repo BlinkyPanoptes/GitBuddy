@@ -1,84 +1,58 @@
 import subprocess
 from git_auth import is_github_authenticated, authenticate_github
 from git_remote import has_git_remote, git_remote_origin, remote_repository, verify_git_remote
-from git_operations import get_repository_status, git_add_stages, stages_changes, git_push_changes, has_staged_changes, is_git_repository
+from git_operations import collect_staged_files, get_repository_status, stages_changes, git_push_changes, has_staged_changes, is_git_repository
+from git_staging import stage_changes
 from file_operations import check_file_directory
 from ui.loading import loading_screen
 from ui.colors import color_text
+from ui.tables import print_menu_table, print_confirm_commit_table, print_repository_changes_table
+from ui.colors import console
 import time
 import sys
 
 # Back to Main Menu
 def return_to_menu():
-    user_input = input("\nBack to Main Menu? [y/n]: ")
+    user_input = console.input("\n[bold cyan]Back to Main Menu? (y/n) > [/bold cyan]")
 
     if user_input.lower() != 'y':
         exit_gitpal()
 
 # System Exit
 def exit_gitpal():
-    print("\nExiting GitPal.\n")
+    print("\nExited GitPal.\n")
     sys.exit()
 
 # Main Menu
 def main_menu():
     while True:
-        print("\n================================")
-        print("       Welcome to GitPal")
-        print("================================")
-        print("[1] Repository Status")
-        print("[2] Stage Changes")
-        print("[3] Commit Changes")
-        print("[4] Push Changes")
-        print("[5] Remote Repository")
-        print("[6] Exit")
-        print("================================")
 
-        user_choice = input("Select an option: ")
+        print_menu_table()
+
+        console.rule("[bold cyan]GitPal Menu[/bold cyan]")
+        user_choice = console.input("[bold cyan]Select an option > [/bold cyan]")
 
         if user_choice == "1":
 
-            repo_status = get_repository_status()
-            check_file_directory()
+            if check_file_directory():
+                repo_status = get_repository_status()
 
-            if repo_status is None:
-                color_text("\nFailed to retrieve repository status.", "red")
+                if repo_status is None:
+                    color_text("\nFailed to retrieve repository status.", "red")
 
-            elif not repo_status:
-                color_text("\nWorking tree is clean.", "green")
+                elif not repo_status:
+                    color_text("\nWorking tree is clean.", "green")
 
-            else:
-                print("\nRepository Changes:")
-
-                for item in repo_status:
-                    color_text(f"{item['status']}: {item['file']}", item['color'])
+                else:
+                    print_repository_changes_table(repo_status)
 
             return_to_menu()
 
         elif user_choice == "2":
 
-            status = get_repository_status()
+            stage_changes()
 
-            if status is None:
-                color_text("\nFailed to retrieve repository status.", "red")
-
-            elif not status:
-                color_text("\nThere are no changes to stage.", "yellow")
-                color_text("Please add a file or make a change before staging", "yellow")
-
-            else:
-                staged_status = git_add_stages()
-                
-                if staged_status is not None:
-                    color_text("\nSuccessfully staged changes\n", "green")
-
-                    for item in staged_status:
-                        color_text(f"{item['status']}: {item['file']}", item['color'])
-
-                    return_to_menu()
-
-                else:
-                    color_text("\nFailed to stage changes.", "red")
+            return_to_menu()
 
         elif user_choice == "3":
 
@@ -89,20 +63,31 @@ def main_menu():
 
             elif not staged_changes:
                 color_text("\nThere are no staged changes to commit.", "yellow")
-                color_text("Please make a change and stage it before committing.", "yellow")
+                color_text("Please stage changes before committing.", "yellow")
 
                 return_to_menu()
 
             else:
-                commit_message = input("\nEnter commit message: ")
+                files_with_status = collect_staged_files()
+                print_confirm_commit_table(files_with_status)
+                confirm = console.input("\n[bold cyan]Are you sure you want to continue? (y/n) > [/bold cyan]")
 
-                if stages_changes(commit_message):
-                    color_text("\nSuccessfully committed changes.", "green")
-
+                if confirm.lower() != 'y':
+                    color_text("\nCommit canceled.", "yellow")
                     return_to_menu()
 
                 else:
-                    color_text("\nFailed to commit changes.", "red")
+                    console.rule("[bold cyan]Enter a commit message[/bold cyan]")
+                    commit_message = console.input("\n[bold cyan]Type your commit message > [/bold cyan]")
+
+                    if stages_changes(commit_message):
+                        color_text("\nSuccessfully committed changes.", "green")
+
+                        return_to_menu()
+                    else:
+                        color_text("\nFailed to commit changes.", "red")
+
+                        return_to_menu()
 
         elif user_choice == "4":
 
@@ -111,7 +96,7 @@ def main_menu():
             if push_results is True:
                 color_text("\nSuccessfully pushed changes.", "green")
 
-                return_to_menu()   
+                return_to_menu()
 
             else:
                 color_text("\nAttention: Push failed.", "red")
@@ -152,8 +137,9 @@ def main():
     else:
         color_text("GitHub authentication failed.", "yellow")
 
-        user_auth_answer = input(
-            "Do you want to authenticate with GitHub? [y/n]: "
+        console.rule("[bold cyan]GitHub Authentication[/bold cyan]")
+        user_auth_answer = console.input(
+            "[bold cyan]Do you want to authenticate with GitHub? (y/n) > [/bold cyan]"
         )
 
         if user_auth_answer.lower() == 'y':
@@ -182,8 +168,9 @@ def main():
     else:
         color_text("This is not a Git repository.", "red")
 
-        user_answer = input(
-            "Do you want to initialize a new Git repository here? [y/n]: "
+        console.rule("[bold cyan]Git Repository Initialization[/bold cyan]")
+        user_answer = console.input(
+            "[bold cyan]Do you want to initialize a new Git repository here? (y/n) > [/bold cyan]"
         )
 
         if user_answer.lower() == 'y':
@@ -200,7 +187,7 @@ def main():
 
                 # Check if the repository is now initialized
                 if is_git_repository():
-                    print("\nThis is now a Git repository.\n")
+                    color_text("This is now a Git repository.\n", "green")
                 else:
                     color_text("Failed to verify the Git repository initialization.\n", "red")
 
@@ -225,10 +212,11 @@ def main():
     else:
         color_text("This Git repository is not connected to any remote repository.", "red")
 
-        user_input = input("Do you want to connect this into an existing remote repository? [y/n]: ")
+        console.rule("[bold cyan]Remote Repository Connection[/bold cyan]")
+        user_input = console.input("[bold cyan]Do you want to connect this into an existing remote repository? (y/n) > [/bold cyan]")
 
         if user_input.lower() == 'y':
-            remote_origin_input = input("\nPaste your remote origin repository link here: ")
+            remote_origin_input = console.input("\n[bold cyan]Paste your remote origin repository link here > [/bold cyan]")
 
             print()
             loading_screen("Verifying the remote repository: ")

@@ -1,6 +1,7 @@
 import subprocess
 from ui.loading import loading_screen
-from ui.colors import color_text
+from ui.colors import color_text, console
+from ui.tables import print_remote_table
 import time
 
 def has_git_remote():
@@ -45,30 +46,18 @@ def remote_repository():
 
         current_remote = subprocess.run(['git', 'remote', '-v'], capture_output = True, text = True)
 
-        print("\n================================")
-        print("       Remote Repository")
-        print("================================")
+        console.print(f"\n[bold cyan]Current Remote:[/bold cyan]\n{current_remote.stdout.strip()}")
+        print_remote_table()
 
-        if current_remote.returncode == 0:
-            print("\nCurrent Remote:")
-            print(current_remote.stdout.strip())
-        else:
-            color_text("\nNo remote repository is configured.", "yellow")
-
-        print("\n================================")
-        print("[1] Change Remote")
-        print("[2] Back")
-        print("================================")
-
-        user_input = input("Select an option: ")
+        user_input = console.input("\n[bold cyan]Select an option > [/bold cyan]")
 
         if user_input == "1":
             # Change remote
-            user_input = input("\nAre you sure you would like to change remote origin? [y/n]: ")
+            user_input = console.input("\n[bold cyan]Are you sure you would like to change remote origin? (y/n) > [/bold cyan]")
 
             if user_input.lower() == "y":
 
-                new_remote_origin = input("\nPlease paste your new remote link here: ")
+                new_remote_origin = console.input("\n[bold cyan]Please paste your new remote link here > [/bold cyan]")
 
                 print()
                 loading_screen("Verifying the new remote repository: ")
